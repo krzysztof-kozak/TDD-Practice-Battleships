@@ -1,1 +1,1 @@
-// export { component } from './component';
+export { createShip } from './ship';
