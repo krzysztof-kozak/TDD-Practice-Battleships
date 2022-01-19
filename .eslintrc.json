@@ -19,7 +19,13 @@
       }
     ],
     // Tell eslint that it is ok to hoist function declarations.
-    "no-use-before-define": ["error", { "functions": false }],
+    "no-use-before-define": [
+      "error",
+      { "functions": false }
+
+      // Tell eslint that it is ok to user unary operators in for loops
+    ],
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
 
     // Tell linter that we don't want this rule, since we're usinga barrels pattern for imports/exports.
     // Learn More: https://hackernoon.com/react-project-architecture-using-barrels-d086146eb0f6
