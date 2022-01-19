@@ -6,10 +6,10 @@ describe('Gameboard can:', () => {
     const ship = createShip(4);
     gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, ship);
 
-    expect(gameboard.grid[0][0]).toEqual(ship);
-    expect(gameboard.grid[1][0]).toEqual(ship);
-    expect(gameboard.grid[2][0]).toEqual(ship);
-    expect(gameboard.grid[3][0]).toEqual(ship);
+    expect(gameboard.grid[0][0]).toEqual({ ship, part: 0 });
+    expect(gameboard.grid[1][0]).toEqual({ ship, part: 1 });
+    expect(gameboard.grid[2][0]).toEqual({ ship, part: 2 });
+    expect(gameboard.grid[3][0]).toEqual({ ship, part: 3 });
   });
 
   test('Place ship(length 3) at specific location (2, 3, vertical)', () => {
@@ -17,9 +17,9 @@ describe('Gameboard can:', () => {
     const ship = createShip(3);
     gameboard.placeShip({ x: 2, y: 3, alignment: 'vertical' }, ship);
 
-    expect(gameboard.grid[2][3]).toEqual(ship);
-    expect(gameboard.grid[2][4]).toEqual(ship);
-    expect(gameboard.grid[2][5]).toEqual(ship);
+    expect(gameboard.grid[2][3]).toEqual({ ship, part: 0 });
+    expect(gameboard.grid[2][4]).toEqual({ ship, part: 1 });
+    expect(gameboard.grid[2][5]).toEqual({ ship, part: 2 });
   });
 
   test('Reject invalid ship placement (out of bounds)', () => {
@@ -46,5 +46,26 @@ describe('Gameboard can:', () => {
     expect(() =>
       gameboard.placeShip({ x: 0, y: -2, alignment: 'vertical' }, ship),
     ).toThrow();
+  });
+});
+
+describe('Gameboard can receive an attack and:', () => {
+  const gameboard = createGameboard();
+  const ship = createShip(5);
+  gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, ship);
+
+  test('report a missed shot', () => {
+    const report = gameboard.receiveAttack({ x: 0, y: 1 });
+    expect(report).toBe('missed');
+
+    expect(gameboard.grid[0][1]).toEqual({ empty: true, wasShotAt: true });
+    expect(gameboard.grid[0][2]).toEqual({ empty: true, wasShotAt: false });
+    expect(gameboard.grid[0][3]).toEqual({ empty: true, wasShotAt: false });
+    expect(gameboard.grid[0][4]).toEqual({ empty: true, wasShotAt: false });
+  });
+
+  test('record a succesful shot and report which part was damaged', () => {
+    const report = gameboard.receiveAttack({ x: 0, y: 0 });
+    expect(report).toEqual({ ship, hitPart: 0 });
   });
 });

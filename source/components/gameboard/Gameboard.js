@@ -1,6 +1,12 @@
 function createGameboard(config = { width: 10, length: 10 }) {
-  const grid = new Array(config.width);
-  grid.fill(new Array(config.length).fill({ empty: true }));
+  const grid = [];
+
+  for (let i = 0; i < config.width; i++) {
+    grid.push([]);
+    for (let j = 0; j < config.length; j++) {
+      grid[i].push({ empty: true, wasShotAt: false });
+    }
+  }
 
   const placeShip = (location, ship) => {
     const { x, y, alignment } = location;
@@ -18,13 +24,13 @@ function createGameboard(config = { width: 10, length: 10 }) {
     switch (alignment) {
       case 'horizontal':
         for (let i = 0; i < ship.length; i++) {
-          grid[x + i][y] = ship;
+          grid[x + i][y] = { ship, part: i };
         }
         break;
 
       case 'vertical':
         for (let i = 0; i < ship.length; i++) {
-          grid[x][y + i] = ship;
+          grid[x][y + i] = { ship, part: i };
         }
 
         break;
@@ -34,7 +40,16 @@ function createGameboard(config = { width: 10, length: 10 }) {
     }
   };
 
-  return { placeShip, grid };
+  const receiveAttack = ({ x, y }) => {
+    if (grid[x][y].empty) {
+      grid[x][y].wasShotAt = true;
+      return 'missed';
+    }
+    const { ship, part: hitPart } = grid[x][y];
+    return { ship, hitPart };
+  };
+
+  return { placeShip, receiveAttack, grid };
 }
 
 export default createGameboard;
