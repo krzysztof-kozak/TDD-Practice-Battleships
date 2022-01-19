@@ -21,4 +21,30 @@ describe('Gameboard can:', () => {
     expect(gameboard.grid[2][4]).toEqual(ship);
     expect(gameboard.grid[2][5]).toEqual(ship);
   });
+
+  test('Reject invalid ship placement (out of bounds)', () => {
+    const gameboard = createGameboard();
+    const ship = createShip(5);
+
+    expect(() =>
+      gameboard.placeShip({ x: 6, y: 0, alignment: 'horizontal' }, ship),
+    ).toThrow();
+
+    expect(() =>
+      gameboard.placeShip({ x: 0, y: 6, alignment: 'vertical' }, ship),
+    ).toThrow();
+  });
+
+  test('Reject invalid ship placement (invalid coordinates)', () => {
+    const gameboard = createGameboard();
+    const ship = createShip(5);
+
+    expect(() =>
+      gameboard.placeShip({ x: -2, y: 0, alignment: 'horizontal' }, ship),
+    ).toThrow();
+
+    expect(() =>
+      gameboard.placeShip({ x: 0, y: -2, alignment: 'vertical' }, ship),
+    ).toThrow();
+  });
 });
