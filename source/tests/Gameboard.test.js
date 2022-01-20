@@ -69,3 +69,25 @@ describe('Gameboard can receive an attack and:', () => {
     expect(report).toEqual({ ship, hitPart: 0 });
   });
 });
+
+describe('Gameboard keeps tack of the ships', () => {
+  const gameboard = createGameboard();
+  const shipA = createShip(3);
+  const shipB = createShip(4);
+  const shipC = createShip(5);
+
+  test('Keeps track of one added ship', () => {
+    gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, shipA);
+    expect(gameboard.ships.length).toBe(1);
+  });
+
+  test('Keeps track of two added ships', () => {
+    gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, shipB);
+    expect(gameboard.ships.length).toBe(2);
+  });
+
+  test('Keeps track of three added ships', () => {
+    gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, shipC);
+    expect(gameboard.ships.length).toBe(3);
+  });
+});
