@@ -91,3 +91,43 @@ describe('Gameboard keeps tack of the ships', () => {
     expect(gameboard.ships.length).toBe(3);
   });
 });
+
+describe('Gameboard keeps track of the grid state', () => {
+  const gameboard = createGameboard();
+  const ship = createShip(3);
+
+  test('Location [0,0] is empty', () => {
+    const cell = gameboard.grid[0][0];
+    expect(cell).toEqual({ empty: true, wasShotAt: false });
+  });
+
+  test('Location [0,0] is empty and was shot at', () => {
+    gameboard.receiveAttack({ x: 0, y: 0 });
+    const cell = gameboard.grid[0][0];
+    expect(cell).toEqual({ empty: true, wasShotAt: true });
+  });
+
+  test('Location [0,0] has a ship on it', () => {
+    gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, ship);
+    const cell = gameboard.grid[0][0];
+    expect(cell).toEqual({ ship, part: 0 });
+  });
+
+  test('Location [0, 0] has a ship part 0 on in', () => {
+    const cell = gameboard.grid[0][0];
+    const shipPart = cell.part;
+    expect(shipPart).toBe(0);
+  });
+
+  test('Location [1, 0] has a ship part 1 on in', () => {
+    const cell = gameboard.grid[1][0];
+    const shipPart = cell.part;
+    expect(shipPart).toBe(1);
+  });
+
+  test('Location [2, 0] has a ship part 2 on in', () => {
+    const cell = gameboard.grid[2][0];
+    const shipPart = cell.part;
+    expect(shipPart).toBe(2);
+  });
+});
