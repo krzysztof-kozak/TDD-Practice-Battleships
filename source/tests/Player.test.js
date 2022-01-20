@@ -16,11 +16,21 @@ test('Player can attack enemy board', () => {
   const player = createPlayer('Bob');
   const enemyShip = createShip(3);
   const enemyBoard = createGameboard();
+
   enemyBoard.placeShip({ x: 0, y: 1, alignment: 'horizontal' }, enemyShip);
 
   expect(player.attack(enemyBoard, { x: 0, y: 0 })).toBe('missed');
+
   expect(player.attack(enemyBoard, { x: 0, y: 1 })).toEqual({
     ship: enemyShip,
     hitPart: 0,
   });
+
+  expect(() => {
+    player.attack(enemyBoard, { x: 25, y: 35 });
+  }).toThrowError('Invalid coordinates');
+
+  expect(() => {
+    player.attack(enemyBoard, { x: -2, y: -3 });
+  }).toThrowError('Invalid coordinates');
 });

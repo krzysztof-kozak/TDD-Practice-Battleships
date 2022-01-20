@@ -43,6 +43,10 @@ function createGameboard(config = { width: 10, length: 10 }) {
   };
 
   const receiveAttack = ({ x, y }) => {
+    if (x < 0 || x > config.width || y < 0 || y > config.length) {
+      throw new Error('Invalid coordinates');
+    }
+
     if (grid[x][y].empty) {
       grid[x][y].wasShotAt = true;
       return 'missed';
