@@ -1,5 +1,9 @@
 function createPlayer(name, config = { isABot: false }) {
-  return { name, isABot: config.isABot };
+  const attack = (board, coordinates) => {
+    return board.receiveAttack(coordinates);
+  };
+
+  return { name, isABot: config.isABot, attack };
 }
 
 export default createPlayer;
