@@ -1,1 +1,3 @@
-// function createPlayer(name){}
+function createPlayer() {}
+
+export default createPlayer;
