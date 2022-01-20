@@ -1,5 +1,6 @@
 function createGameboard(config = { width: 10, length: 10 }) {
   const grid = [];
+  const ships = [];
 
   for (let i = 0; i < config.width; i++) {
     grid.push([]);
@@ -21,6 +22,8 @@ function createGameboard(config = { width: 10, length: 10 }) {
       );
     }
 
+    ships.push(ship);
+
     switch (alignment) {
       case 'horizontal':
         for (let i = 0; i < ship.length; i++) {
@@ -32,7 +35,6 @@ function createGameboard(config = { width: 10, length: 10 }) {
         for (let i = 0; i < ship.length; i++) {
           grid[x][y + i] = { ship, part: i };
         }
-
         break;
 
       default:
@@ -49,7 +51,7 @@ function createGameboard(config = { width: 10, length: 10 }) {
     return { ship, hitPart };
   };
 
-  return { placeShip, receiveAttack, grid };
+  return { placeShip, receiveAttack, grid, ships };
 }
 
 export default createGameboard;
