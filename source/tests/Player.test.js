@@ -34,3 +34,22 @@ test('Player can attack enemy board', () => {
     player.attack(enemyBoard, { x: -2, y: -3 });
   }).toThrowError('Invalid coordinates');
 });
+
+test('AI player can randomly hit every single cell on an empty board, while not making the same shot twice', () => {
+  const player = createPlayer('Bob', { isABot: true });
+  const board = createGameboard();
+  const { getValidMoves } = board;
+
+  // default board is 10x10
+  expect(getValidMoves().length).toBe(100);
+
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 10; y++) {
+      expect(player.randomAttack(getValidMoves()).wasShotAt).toBe(false);
+      board.receiveAttack({ x, y });
+    }
+  }
+
+  // no valid moves are left
+  expect(getValidMoves().length).toBe(0);
+});
