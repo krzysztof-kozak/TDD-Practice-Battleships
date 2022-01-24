@@ -119,13 +119,13 @@ describe('Gameboard keeps track of the grid state', () => {
     expect(shipPart).toBe(0);
   });
 
-  test('Location [1, 0] has a ship part 0 on in', () => {
+  test('Location [1, 0] has a ship part 1 on in', () => {
     const cell = gameboard.grid[1][0];
     const shipPart = cell.part;
     expect(shipPart).toBe(1);
   });
 
-  test('Location [2, 0] has a ship part 0 on in', () => {
+  test('Location [2, 0] has a ship part 2 on in', () => {
     const cell = gameboard.grid[2][0];
     const shipPart = cell.part;
     expect(shipPart).toBe(2);
