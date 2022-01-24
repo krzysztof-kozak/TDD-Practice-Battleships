@@ -1,6 +1,7 @@
 function createGameboard(config = { width: 10, length: 10 }) {
   const grid = [];
   const ships = [];
+  let validMoves = grid;
 
   for (let i = 0; i < config.width; i++) {
     grid.push([]);
@@ -49,13 +50,29 @@ function createGameboard(config = { width: 10, length: 10 }) {
 
     if (grid[x][y].empty) {
       grid[x][y].wasShotAt = true;
+      updateValidMoves();
       return 'missed';
     }
     const { ship, part: hitPart } = grid[x][y];
     return { ship, hitPart };
   };
 
-  return { placeShip, receiveAttack, grid, ships };
+  const getValidMoves = () => validMoves.flat();
+
+  function updateValidMoves() {
+    validMoves = [];
+    grid.forEach((element) =>
+      validMoves.push(
+        element.filter(
+          (cell) =>
+            cell.wasShotAt === false ||
+            cell.ship?.shipParts[cell.part].isHit === false,
+        ),
+      ),
+    );
+  }
+
+  return { placeShip, receiveAttack, grid, ships, getValidMoves };
 }
 
 export default createGameboard;
