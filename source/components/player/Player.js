@@ -3,7 +3,12 @@ function createPlayer(name, config = { isABot: false }) {
     return board.receiveAttack(coordinates);
   };
 
-  return { name, isABot: config.isABot, attack };
+  const randomAttack = (validMoves) => {
+    const randomIndex = Math.floor(Math.random() * validMoves.length);
+    return validMoves[randomIndex];
+  };
+
+  return { name, isABot: config.isABot, attack, randomAttack };
 }
 
 export default createPlayer;
