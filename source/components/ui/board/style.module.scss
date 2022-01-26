@@ -1,0 +1,17 @@
+.container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(10, 1fr);
+  width: 600px;
+  height: 600px;
+  margin-inline: auto;
+  border: 1px solid;
+  margin-top: 2em;
+}
+
+.cell {
+  border: 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
