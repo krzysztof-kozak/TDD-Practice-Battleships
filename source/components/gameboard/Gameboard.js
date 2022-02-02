@@ -17,7 +17,10 @@ function createGameboard(config = { width: 10, length: 10 }) {
       throw new Error('Invalid coordinates');
     }
 
-    if (x + ship.length > config.width || y + ship.length > config.length) {
+    if (
+      (x + ship.length > config.width && alignment === 'horizontal') ||
+      (y + ship.length > config.length && alignment === 'vertical')
+    ) {
       throw new Error(
         'Cannot place ship. The ship is out of gameboard bounds.',
       );

@@ -2,3 +2,15 @@ body {
   background-color: hsl(0, 5%, 10%);
   color: hsl(0, 0%, 100%);
 }
+
+.hidden {
+  display: none;
+}
+
+.highlighted {
+  background-color: hsl(141deg 49% 22%);
+}
+
+.ship {
+  background-color: hsl(141, 43%, 17%);
+}

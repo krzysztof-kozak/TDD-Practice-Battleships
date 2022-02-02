@@ -12,6 +12,9 @@ const board = (function board() {
       for (let i = 0; i < array.length; i++) {
         const cell = document.createElement('div');
         cell.classList.add(style.cell);
+        cell.dataset.type = 'cell';
+        cell.dataset.x = x;
+        cell.dataset.y = y;
         cell.innerText = `x: ${x}\ny: ${y}`;
         fragment.appendChild(cell);
         y += 1;
