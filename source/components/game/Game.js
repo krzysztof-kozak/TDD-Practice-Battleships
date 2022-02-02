@@ -4,7 +4,11 @@ import { homeScreen, board, message } from '../ui';
 import style from '../ui/home_screen/style.module.scss';
 
 const game = (function game() {
-  const placePlayerShips = (playerName, playerBoard) => {
+  // let computerBoard;
+  let playerBoard;
+  let playerName;
+
+  const placePlayerShips = () => {
     const grid = document.querySelector('div:not(.hidden)');
 
     message.render(grid);
@@ -24,6 +28,35 @@ const game = (function game() {
     playerSpan.textContent = playerName;
     shipSpan.textContent = name;
 
+    let placementMode = 'vertical';
+
+    const switchPlacementMode = () => {
+      if (placementMode === 'vertical') {
+        return 'horizontal';
+      }
+
+      if (placementMode === 'horizontal') {
+        return 'vertical';
+      }
+
+      throw new Error(
+        `Unexpected placement mode. Expected "vertical" or "horizontal", but received ${placementMode}`,
+      );
+    };
+    const getAxis = (mode, x, y) => {
+      if (mode === 'horizontal') {
+        return x;
+      }
+
+      if (mode === 'vertical') {
+        return y;
+      }
+
+      throw new Error(
+        `Unexpected parameter: "${mode}". Expected "horizontal" or "vertical"`,
+      );
+    };
+
     grid.addEventListener('mouseover', (e) => {
       if (e.target.dataset.type !== 'cell') {
         return;
@@ -35,19 +68,35 @@ const game = (function game() {
 
       const { x, y } = e.target.dataset;
       let currentX = parseInt(x, 10);
+      let currentY = parseInt(y, 10);
 
       const allCells = grid.querySelectorAll('div');
       const cellsToHighlight = [];
 
       allCells.forEach((cell) => cell.classList.remove('highlighted'));
 
-      if (10 - currentShip.length >= x) {
-        for (let i = 0; i < currentShip.length; i++) {
-          const cellToHighlight = document.querySelector(
-            `[data-x="${currentX}"][data-y="${y}"]`,
-          );
+      if (10 - currentShip.length >= getAxis(placementMode, x, y)) {
+        let cellToHighlight;
 
-          currentX += 1;
+        for (let i = 0; i < currentShip.length; i++) {
+          switch (placementMode) {
+            case 'horizontal':
+              cellToHighlight = document.querySelector(
+                `[data-x="${currentX}"][data-y="${y}"]`,
+              );
+              currentX += 1;
+              break;
+
+            case 'vertical':
+              cellToHighlight = document.querySelector(
+                `[data-x="${x}"][data-y="${currentY}"]`,
+              );
+              currentY += 1;
+              break;
+
+            default:
+              break;
+          }
           cellsToHighlight.push(cellToHighlight);
         }
 
@@ -72,19 +121,37 @@ const game = (function game() {
 
       const { x, y } = e.target.dataset;
       let currentX = parseInt(x, 10);
+      let currentY = parseInt(y, 10);
 
       const cellsToPlaceShipOn = [];
 
-      if (10 - currentShip.length < x) {
+      if (10 - currentShip.length < getAxis(placementMode, x, y)) {
         return;
       }
 
       for (let i = 0; i < currentShip.length; i++) {
-        const cellToPlaceShipOn = document.querySelector(
-          `[data-x="${currentX}"][data-y="${y}"]`,
-        );
+        let cellToPlaceShipOn;
+
+        switch (placementMode) {
+          case 'horizontal':
+            cellToPlaceShipOn = document.querySelector(
+              `[data-x="${currentX}"][data-y="${y}"]`,
+            );
+            currentX += 1;
+            break;
+
+          case 'vertical':
+            cellToPlaceShipOn = document.querySelector(
+              `[data-x="${x}"][data-y="${currentY}"]`,
+            );
+            currentY += 1;
+            break;
+
+          default:
+            break;
+        }
+
         cellsToPlaceShipOn.push(cellToPlaceShipOn);
-        currentX += 1;
       }
 
       const isAValidPlacement = cellsToPlaceShipOn.every(
@@ -98,7 +165,7 @@ const game = (function game() {
       cellsToPlaceShipOn.forEach((cell) => cell.classList.add('ship'));
 
       playerBoard.placeShip(
-        { x: parseInt(x, 10), y: parseInt(y, 10), alignment: 'horizontal' },
+        { x: parseInt(x, 10), y: parseInt(y, 10), alignment: placementMode },
         currentShip,
       );
 
@@ -108,12 +175,20 @@ const game = (function game() {
 
       shipSpan.textContent = name;
     });
+
+    document.addEventListener('keypress', (e) => {
+      if (e.key !== 'y') {
+        return;
+      }
+
+      placementMode = switchPlacementMode();
+    });
   };
 
   const handleStartGame = () => {
-    const playerName = document.querySelector(`.${style.input}`).value;
+    playerName = document.querySelector(`.${style.input}`).value || 'Player';
+    playerBoard = createGameboard();
 
-    const playerBoard = createGameboard();
     board.render(playerBoard.grid);
 
     const title = document.querySelector(`.${style.title}`);
@@ -122,7 +197,7 @@ const game = (function game() {
     title.classList.add('hidden');
     wrapper.classList.add('hidden');
 
-    placePlayerShips(playerName || 'Player', playerBoard);
+    placePlayerShips();
   };
 
   const initialize = () => {

@@ -1,5 +1,17 @@
-.message {
+.shipInfo,
+.placementInfo {
   text-align: center;
-  font-size: 2rem;
   margin-top: 2em;
+}
+
+.shipInfo {
+  font-size: 2rem;
+}
+
+.key {
+  font-family: monospace;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 0.2em 0.6em;
+  background-color: hsl(0, 5%, 25%);
 }
