@@ -31,13 +31,13 @@ function createGameboard(config = { width: 10, length: 10 }) {
     switch (alignment) {
       case 'horizontal':
         for (let i = 0; i < ship.length; i++) {
-          grid[x + i][y] = { ship, part: i };
+          grid[x + i][y] = { ship, part: i, coords: { x: x + i, y } };
         }
         break;
 
       case 'vertical':
         for (let i = 0; i < ship.length; i++) {
-          grid[x][y + i] = { ship, part: i };
+          grid[x][y + i] = { ship, part: i, coords: { x, y: y + i } };
         }
         break;
 

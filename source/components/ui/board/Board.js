@@ -23,6 +23,7 @@ const board = (function board() {
 
     container.appendChild(fragment);
     document.querySelector('body').appendChild(container);
+    return container;
   };
 
   return { render };

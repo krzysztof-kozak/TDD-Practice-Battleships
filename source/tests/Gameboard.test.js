@@ -6,10 +6,26 @@ describe('Gameboard can:', () => {
     const ship = createShip(4);
     gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, ship);
 
-    expect(gameboard.grid[0][0]).toEqual({ ship, part: 0 });
-    expect(gameboard.grid[1][0]).toEqual({ ship, part: 1 });
-    expect(gameboard.grid[2][0]).toEqual({ ship, part: 2 });
-    expect(gameboard.grid[3][0]).toEqual({ ship, part: 3 });
+    expect(gameboard.grid[0][0]).toEqual({
+      ship,
+      part: 0,
+      coords: { x: 0, y: 0 },
+    });
+    expect(gameboard.grid[1][0]).toEqual({
+      ship,
+      part: 1,
+      coords: { x: 1, y: 0 },
+    });
+    expect(gameboard.grid[2][0]).toEqual({
+      ship,
+      part: 2,
+      coords: { x: 2, y: 0 },
+    });
+    expect(gameboard.grid[3][0]).toEqual({
+      ship,
+      part: 3,
+      coords: { x: 3, y: 0 },
+    });
   });
 
   test('Place ship(length 3) at specific location (2, 3, vertical)', () => {
@@ -17,9 +33,21 @@ describe('Gameboard can:', () => {
     const ship = createShip(3);
     gameboard.placeShip({ x: 2, y: 3, alignment: 'vertical' }, ship);
 
-    expect(gameboard.grid[2][3]).toEqual({ ship, part: 0 });
-    expect(gameboard.grid[2][4]).toEqual({ ship, part: 1 });
-    expect(gameboard.grid[2][5]).toEqual({ ship, part: 2 });
+    expect(gameboard.grid[2][3]).toEqual({
+      ship,
+      part: 0,
+      coords: { x: 2, y: 3 },
+    });
+    expect(gameboard.grid[2][4]).toEqual({
+      ship,
+      part: 1,
+      coords: { x: 2, y: 4 },
+    });
+    expect(gameboard.grid[2][5]).toEqual({
+      ship,
+      part: 2,
+      coords: { x: 2, y: 5 },
+    });
   });
 
   test('Reject invalid ship placement (out of bounds)', () => {
@@ -110,7 +138,7 @@ describe('Gameboard keeps track of the grid state', () => {
   test('Location [0,0] has a ship on it', () => {
     gameboard.placeShip({ x: 0, y: 0, alignment: 'horizontal' }, ship);
     const cell = gameboard.grid[0][0];
-    expect(cell).toEqual({ ship, part: 0 });
+    expect(cell).toEqual({ ship, part: 0, coords: { x: 0, y: 0 } });
   });
 
   test('Location [0, 0] has a ship part 0 on in', () => {

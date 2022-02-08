@@ -4,14 +4,68 @@ import { homeScreen, board, message } from '../ui';
 import style from '../ui/home_screen/style.module.scss';
 
 const game = (function game() {
-  // let computerBoard;
+  let computerBoard;
+  let computerDOMGrid;
+
   let playerBoard;
+  let playerDOMGrid;
   let playerName;
 
-  const placePlayerShips = () => {
-    const grid = document.querySelector('div:not(.hidden)');
+  const placeComputerShips = () => {
+    computerBoard = createGameboard();
+    computerDOMGrid = board.render(computerBoard.grid);
+    console.log(computerDOMGrid);
 
-    message.render(grid);
+    const shipsToPlace = [
+      { name: 'carrier', ship: createShip(5) },
+      { name: 'Battleship', ship: createShip(4) },
+      { name: 'Destroyer', ship: createShip(3) },
+      { name: 'Submarine', ship: createShip(3) },
+      { name: 'Patrol Boat', ship: createShip(2) },
+    ];
+
+    const randomPlacements = [
+      [
+        { x: 0, y: 0, alignment: 'vertical' },
+        { x: 4, y: 1, alignment: 'horizontal' },
+        { x: 2, y: 4, alignment: 'horizontal' },
+        { x: 6, y: 7, alignment: 'vertical' },
+        { x: 8, y: 3, alignment: 'vertical' },
+      ],
+      [
+        { x: 5, y: 0, alignment: 'horizontal' },
+        { x: 1, y: 2, alignment: 'horizontal' },
+        { x: 5, y: 4, alignment: 'horizontal' },
+        { x: 1, y: 7, alignment: 'horizontal' },
+        { x: 9, y: 8, alignment: 'vertical' },
+      ],
+      [
+        { x: 0, y: 0, alignment: 'vertical' },
+        { x: 2, y: 2, alignment: 'vertical' },
+        { x: 4, y: 4, alignment: 'vertical' },
+        { x: 6, y: 5, alignment: 'vertical' },
+        { x: 8, y: 1, alignment: 'vertical' },
+      ],
+      [
+        { x: 5, y: 1, alignment: 'horizontal' },
+        { x: 0, y: 3, alignment: 'horizontal' },
+        { x: 7, y: 5, alignment: 'horizontal' },
+        { x: 1, y: 7, alignment: 'horizontal' },
+        { x: 5, y: 4, alignment: 'vertical' },
+      ],
+    ];
+
+    const randomIndex = Math.floor(Math.random() * randomPlacements.length);
+    const placement = randomPlacements[randomIndex];
+
+    shipsToPlace.forEach(({ ship }, index) => {
+      const { x, y, alignment } = placement[index];
+      computerBoard.placeShip({ x, y, alignment }, ship);
+    });
+  };
+
+  const placePlayerShips = () => {
+    message.render(playerDOMGrid);
     const playerSpan = document.querySelector('.player-span-js');
     const shipSpan = document.querySelector('.ship-span-js');
 
@@ -43,6 +97,7 @@ const game = (function game() {
         `Unexpected placement mode. Expected "vertical" or "horizontal", but received ${placementMode}`,
       );
     };
+
     const getAxis = (mode, x, y) => {
       if (mode === 'horizontal') {
         return x;
@@ -57,7 +112,7 @@ const game = (function game() {
       );
     };
 
-    grid.addEventListener('mouseover', (e) => {
+    const handleMouseOver = (e) => {
       if (e.target.dataset.type !== 'cell') {
         return;
       }
@@ -70,7 +125,7 @@ const game = (function game() {
       let currentX = parseInt(x, 10);
       let currentY = parseInt(y, 10);
 
-      const allCells = grid.querySelectorAll('div');
+      const allCells = playerDOMGrid.querySelectorAll('div');
       const cellsToHighlight = [];
 
       allCells.forEach((cell) => cell.classList.remove('highlighted'));
@@ -107,15 +162,18 @@ const game = (function game() {
       } else {
         allCells.forEach((cell) => cell.classList.remove('highlighted'));
       }
-    });
+    };
 
-    grid.addEventListener('click', (e) => {
+    const handleClick = (e) => {
       if (e.target.dataset.type !== 'cell') {
         return;
       }
 
       if (shipsToPlace.length === 0) {
         currentShip = null;
+        placeComputerShips();
+        // eslint-disable-next-line no-use-before-define
+        removeEventListeners();
         return;
       }
 
@@ -174,22 +232,32 @@ const game = (function game() {
       currentShip = newShip.ship;
 
       shipSpan.textContent = name;
-    });
+    };
 
-    document.addEventListener('keypress', (e) => {
+    const handleKeypress = (e) => {
       if (e.key !== 'y') {
         return;
       }
 
       placementMode = switchPlacementMode();
-    });
+    };
+
+    const removeEventListeners = () => {
+      playerDOMGrid.removeEventListener('mouseover', handleMouseOver);
+      playerDOMGrid.removeEventListener('click', handleClick);
+      document.removeEventListener('keypress', handleKeypress);
+    };
+
+    playerDOMGrid.addEventListener('mouseover', handleMouseOver);
+    playerDOMGrid.addEventListener('click', handleClick);
+    document.addEventListener('keypress', handleKeypress);
   };
 
   const handleStartGame = () => {
     playerName = document.querySelector(`.${style.input}`).value || 'Player';
     playerBoard = createGameboard();
 
-    board.render(playerBoard.grid);
+    playerDOMGrid = board.render(playerBoard.grid);
 
     const title = document.querySelector(`.${style.title}`);
     const wrapper = document.querySelector(`.${style.wrapper}`);
