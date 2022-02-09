@@ -86,10 +86,26 @@ describe('Gameboard can receive an attack and:', () => {
     const report = gameboard.receiveAttack({ x: 0, y: 1 });
     expect(report).toBe('missed');
 
-    expect(gameboard.grid[0][1]).toEqual({ empty: true, wasShotAt: true });
-    expect(gameboard.grid[0][2]).toEqual({ empty: true, wasShotAt: false });
-    expect(gameboard.grid[0][3]).toEqual({ empty: true, wasShotAt: false });
-    expect(gameboard.grid[0][4]).toEqual({ empty: true, wasShotAt: false });
+    expect(gameboard.grid[0][1]).toEqual({
+      empty: true,
+      wasShotAt: true,
+      coords: { x: 0, y: 1 },
+    });
+    expect(gameboard.grid[0][2]).toEqual({
+      empty: true,
+      wasShotAt: false,
+      coords: { x: 0, y: 2 },
+    });
+    expect(gameboard.grid[0][3]).toEqual({
+      empty: true,
+      wasShotAt: false,
+      coords: { x: 0, y: 3 },
+    });
+    expect(gameboard.grid[0][4]).toEqual({
+      empty: true,
+      wasShotAt: false,
+      coords: { x: 0, y: 4 },
+    });
   });
 
   test('record a succesful shot and report which part was damaged', () => {
@@ -126,13 +142,21 @@ describe('Gameboard keeps track of the grid state', () => {
 
   test('Location [0,0] is empty', () => {
     const cell = gameboard.grid[0][0];
-    expect(cell).toEqual({ empty: true, wasShotAt: false });
+    expect(cell).toEqual({
+      empty: true,
+      wasShotAt: false,
+      coords: { x: 0, y: 0 },
+    });
   });
 
   test('Location [0,0] is empty and was shot at', () => {
     gameboard.receiveAttack({ x: 0, y: 0 });
     const cell = gameboard.grid[0][0];
-    expect(cell).toEqual({ empty: true, wasShotAt: true });
+    expect(cell).toEqual({
+      empty: true,
+      wasShotAt: true,
+      coords: { x: 0, y: 0 },
+    });
   });
 
   test('Location [0,0] has a ship on it', () => {

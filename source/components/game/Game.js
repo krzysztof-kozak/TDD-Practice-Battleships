@@ -1,20 +1,92 @@
 import { createShip } from '../ship';
 import { createGameboard } from '../gameboard';
-import { homeScreen, board, message } from '../ui';
+import { createPlayer } from '../player';
+import { homeScreen, board, placementMessage } from '../ui';
 import style from '../ui/home_screen/style.module.scss';
 
 const game = (function game() {
+  let player;
+  let computer;
+
   let computerBoard;
   let computerDOMGrid;
 
   let playerBoard;
   let playerDOMGrid;
-  let playerName;
+
+  // let playerShipCount;
+  // let computerShipCount;
+
+  const startBattle = () => {
+    // playerShipCount = playerBoard.ships;
+    // computerShipCount = computerBoard.ships;
+
+    let currentTurn = 'player';
+    const switchTurns = (turn) => (turn === 'player' ? 'computer' : 'player');
+
+    const makeComputerMove = () => {
+      const target = computer.randomAttack(playerBoard.getValidMoves());
+      const hitResult = computer.attack(playerBoard, target.coords);
+
+      if (hitResult === 'missed') {
+        playerDOMGrid.querySelector(
+          `[data-x="${target.coords.x}"][data-y="${target.coords.y}"]`,
+        ).style.backgroundColor = 'hsl(240deg 75% 75%)';
+
+        currentTurn = switchTurns(currentTurn);
+        return;
+      }
+
+      const { ship, hitPart } = hitResult;
+      ship.hit(hitPart);
+
+      playerDOMGrid.querySelector(
+        `[data-x="${target.coords.x}"][data-y="${target.coords.y}"]`,
+      ).style.backgroundColor = 'hsl(0deg 75% 45%)';
+
+      currentTurn = switchTurns(currentTurn);
+    };
+
+    const messages = document.querySelectorAll('p');
+    messages.forEach((msg) => msg.remove());
+
+    computerDOMGrid.addEventListener('click', (e) => {
+      if (e.target.dataset.type !== 'cell') {
+        return;
+      }
+
+      if (currentTurn === 'computer') {
+        return;
+      }
+
+      const { x, y } = e.target.dataset;
+      const hitResult = player.attack(computerBoard, { x, y });
+
+      if (hitResult === 'missed') {
+        currentTurn = switchTurns(currentTurn);
+        e.target.style.backgroundColor = 'hsl(240deg 75% 75%)';
+        makeComputerMove();
+        return;
+      }
+
+      const { ship, hitPart } = hitResult;
+
+      ship.hit(hitPart);
+      e.target.style.backgroundColor = 'hsl(0deg 75% 45%)';
+
+      if (ship.isSunk()) {
+        alert("You've sunk an enemy ship");
+      }
+
+      currentTurn = switchTurns(currentTurn);
+      makeComputerMove();
+    });
+  };
 
   const placeComputerShips = () => {
+    computer = createPlayer('Computer', { isABot: true });
     computerBoard = createGameboard();
     computerDOMGrid = board.render(computerBoard.grid);
-    console.log(computerDOMGrid);
 
     const shipsToPlace = [
       { name: 'carrier', ship: createShip(5) },
@@ -62,10 +134,13 @@ const game = (function game() {
       const { x, y, alignment } = placement[index];
       computerBoard.placeShip({ x, y, alignment }, ship);
     });
+
+    startBattle();
   };
 
   const placePlayerShips = () => {
-    message.render(playerDOMGrid);
+    placementMessage.render(playerDOMGrid);
+
     const playerSpan = document.querySelector('.player-span-js');
     const shipSpan = document.querySelector('.ship-span-js');
 
@@ -77,9 +152,12 @@ const game = (function game() {
       { name: 'Patrol Boat', ship: createShip(2) },
     ];
 
-    let { name, ship: currentShip } = shipsToPlace.shift();
+    let currentIndex = 0;
+    const maxIndex = shipsToPlace.length - 1;
 
-    playerSpan.textContent = playerName;
+    let { name, ship: currentShip } = shipsToPlace[currentIndex];
+
+    playerSpan.textContent = player.name;
     shipSpan.textContent = name;
 
     let placementMode = 'vertical';
@@ -169,17 +247,14 @@ const game = (function game() {
         return;
       }
 
-      if (shipsToPlace.length === 0) {
-        currentShip = null;
-        placeComputerShips();
-        // eslint-disable-next-line no-use-before-define
-        removeEventListeners();
-        return;
-      }
-
       const { x, y } = e.target.dataset;
       let currentX = parseInt(x, 10);
       let currentY = parseInt(y, 10);
+
+      playerBoard.placeShip(
+        { x: parseInt(x, 10), y: parseInt(y, 10), alignment: placementMode },
+        currentShip,
+      );
 
       const cellsToPlaceShipOn = [];
 
@@ -222,15 +297,18 @@ const game = (function game() {
 
       cellsToPlaceShipOn.forEach((cell) => cell.classList.add('ship'));
 
-      playerBoard.placeShip(
-        { x: parseInt(x, 10), y: parseInt(y, 10), alignment: placementMode },
-        currentShip,
-      );
+      if (currentIndex === maxIndex) {
+        placeComputerShips();
+        // eslint-disable-next-line no-use-before-define
+        removeEventListeners();
+        return;
+      }
 
-      const newShip = shipsToPlace.shift();
+      currentIndex += 1;
+      const newShip = shipsToPlace[currentIndex];
+
       name = newShip.name;
       currentShip = newShip.ship;
-
       shipSpan.textContent = name;
     };
 
@@ -254,9 +332,11 @@ const game = (function game() {
   };
 
   const handleStartGame = () => {
-    playerName = document.querySelector(`.${style.input}`).value || 'Player';
-    playerBoard = createGameboard();
+    const playerName =
+      document.querySelector(`.${style.input}`).value || 'Player';
+    player = createPlayer(playerName);
 
+    playerBoard = createGameboard();
     playerDOMGrid = board.render(playerBoard.grid);
 
     const title = document.querySelector(`.${style.title}`);

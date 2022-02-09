@@ -6,7 +6,7 @@ function createGameboard(config = { width: 10, length: 10 }) {
   for (let i = 0; i < config.width; i++) {
     grid.push([]);
     for (let j = 0; j < config.length; j++) {
-      grid[i].push({ empty: true, wasShotAt: false });
+      grid[i].push({ empty: true, wasShotAt: false, coords: { x: i, y: j } });
     }
   }
 

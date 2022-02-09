@@ -1,1 +1,1 @@
-export { default as message } from './Message';
+export { default as placementMessage } from './Message';

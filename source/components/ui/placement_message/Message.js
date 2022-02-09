@@ -1,6 +1,6 @@
 import style from './style.module.scss';
 
-const message = (function message() {
+const placementMessage = (function message() {
   const currentShipInformation = document.createElement('p');
   currentShipInformation.innerHTML =
     '<span class="player-span-js"></span>, place your <span class="ship-span-js"></span>';
@@ -18,4 +18,4 @@ const message = (function message() {
   return { render };
 })();
 
-export default message;
+export default placementMessage;
