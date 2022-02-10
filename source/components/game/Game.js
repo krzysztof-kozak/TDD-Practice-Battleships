@@ -14,12 +14,12 @@ const game = (function game() {
   let playerBoard;
   let playerDOMGrid;
 
-  // let playerShipCount;
-  // let computerShipCount;
+  let playerShipCount;
+  let computerShipCount;
 
   const startBattle = () => {
-    // playerShipCount = playerBoard.ships;
-    // computerShipCount = computerBoard.ships;
+    playerShipCount = playerBoard.ships.length;
+    computerShipCount = computerBoard.ships.length;
 
     let currentTurn = 'player';
     const switchTurns = (turn) => (turn === 'player' ? 'computer' : 'player');
@@ -43,6 +43,11 @@ const game = (function game() {
       playerDOMGrid.querySelector(
         `[data-x="${target.coords.x}"][data-y="${target.coords.y}"]`,
       ).style.backgroundColor = 'hsl(0deg 75% 45%)';
+
+      if (ship.isSunk()) {
+        playerShipCount -= 1;
+        console.log('Remaining computer ships: ', playerShipCount);
+      }
 
       currentTurn = switchTurns(currentTurn);
     };
@@ -82,6 +87,8 @@ const game = (function game() {
 
       if (ship.isSunk()) {
         alert("You've sunk an enemy ship");
+        computerShipCount -= 1;
+        console.log('Remaining computer ships: ', computerShipCount);
       }
 
       currentTurn = switchTurns(currentTurn);
