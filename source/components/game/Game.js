@@ -55,9 +55,15 @@ const game = (function game() {
         return;
       }
 
+      if (e.target.dataset.clicked) {
+        return;
+      }
+
       if (currentTurn === 'computer') {
         return;
       }
+
+      e.target.dataset.clicked = true;
 
       const { x, y } = e.target.dataset;
       const hitResult = player.attack(computerBoard, { x, y });
