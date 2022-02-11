@@ -5,6 +5,9 @@ import { homeScreen, board, placementMessage } from '../ui';
 import style from '../ui/home_screen/style.module.scss';
 
 const game = (function game() {
+  let title;
+  let wrapper;
+
   let player;
   let computer;
 
@@ -16,6 +19,17 @@ const game = (function game() {
 
   let playerShipCount;
   let computerShipCount;
+
+  const restartGame = () => {
+    playerBoard = null;
+    playerDOMGrid.remove();
+
+    computerBoard = null;
+    computerDOMGrid.remove();
+
+    title.classList.remove('hidden');
+    wrapper.classList.remove('hidden');
+  };
 
   const startBattle = () => {
     playerShipCount = playerBoard.ships.length;
@@ -126,9 +140,9 @@ const game = (function game() {
         text: `${winner} has won the battle!`,
         icon: 'info',
         confirmButtonColor: '#3085d6',
-        confirmButtonText: 'OK',
+        confirmButtonText: 'Restart',
       }).then(() => {
-        console.log('restarting....');
+        restartGame();
       });
     };
 
@@ -391,8 +405,8 @@ const game = (function game() {
     playerBoard = createGameboard();
     playerDOMGrid = board.render(playerBoard.grid);
 
-    const title = document.querySelector(`.${style.title}`);
-    const wrapper = document.querySelector(`.${style.wrapper}`);
+    title = document.querySelector(`.${style.title}`);
+    wrapper = document.querySelector(`.${style.wrapper}`);
 
     title.classList.add('hidden');
     wrapper.classList.add('hidden');
