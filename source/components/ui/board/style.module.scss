@@ -2,8 +2,8 @@
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: repeat(10, 1fr);
-  width: 600px;
-  height: 600px;
+  width: min(90vw, 600px);
+  height: min(90vw, 600px);
   margin-inline: auto;
   border: 1px solid;
   margin-top: 2em;
