@@ -46,12 +46,19 @@ const game = (function game() {
 
       if (ship.isSunk()) {
         playerShipCount -= 1;
-        console.log('Remaining player ships: ', playerShipCount);
-      }
 
-      if (playerShipCount === 0) {
-        // eslint-disable-next-line no-use-before-define
-        announceWinner('Player');
+        Swal.fire({
+          title: 'Ship down!',
+          text: 'Enemy has sunk your __ship__',
+          icon: 'warning',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          if (playerShipCount === 0) {
+            // eslint-disable-next-line no-use-before-define
+            announceWinner('Computer');
+          }
+        });
       }
 
       currentTurn = switchTurns(currentTurn);
@@ -92,12 +99,19 @@ const game = (function game() {
 
       if (ship.isSunk()) {
         computerShipCount -= 1;
-        console.log('Remaining computer ships: ', computerShipCount);
-      }
 
-      if (computerShipCount === 0) {
-        // eslint-disable-next-line no-use-before-define
-        announceWinner('Player');
+        Swal.fire({
+          title: 'Ship down!',
+          text: "You've sunk enemy __ship__",
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          if (computerShipCount === 0) {
+            // eslint-disable-next-line no-use-before-define
+            announceWinner('Player');
+          }
+        });
       }
 
       currentTurn = switchTurns(currentTurn);
@@ -105,8 +119,17 @@ const game = (function game() {
     };
 
     const announceWinner = (winner) => {
-      alert(`${winner} has won`);
       computerDOMGrid.removeEventListener('click', handleTurn);
+
+      Swal.fire({
+        title: 'Battle report',
+        text: `${winner} has won the battle!`,
+        icon: 'info',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        console.log('restarting....');
+      });
     };
 
     computerDOMGrid.addEventListener('click', handleTurn);
