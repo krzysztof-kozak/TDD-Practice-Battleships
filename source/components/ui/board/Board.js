@@ -15,7 +15,6 @@ const board = (function board() {
         cell.dataset.type = 'cell';
         cell.dataset.x = x;
         cell.dataset.y = y;
-        cell.innerText = `x: ${x}\ny: ${y}`;
         fragment.appendChild(cell);
         y += 1;
       }
