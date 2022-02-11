@@ -31,7 +31,7 @@ module.exports = {
     new MiniCssExtractPlugin(),
 
     new webpack.ProvidePlugin({
-      _: 'lodash',
+      Swal: 'sweetalert2',
     }),
   ],
 

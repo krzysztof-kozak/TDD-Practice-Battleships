@@ -34,7 +34,7 @@
 
   // Tell eslint that we are using a global _ variable from lodash library.
   // You can add other globals, too.
-  "globals": { "_": true },
+  "globals": { "Swal": true },
 
   "env": {
     "browser": true,
