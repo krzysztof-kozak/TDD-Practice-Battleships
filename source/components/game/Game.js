@@ -46,7 +46,12 @@ const game = (function game() {
 
       if (ship.isSunk()) {
         playerShipCount -= 1;
-        console.log('Remaining computer ships: ', playerShipCount);
+        console.log('Remaining player ships: ', playerShipCount);
+      }
+
+      if (playerShipCount === 0) {
+        // eslint-disable-next-line no-use-before-define
+        announceWinner('Player');
       }
 
       currentTurn = switchTurns(currentTurn);
@@ -55,7 +60,7 @@ const game = (function game() {
     const messages = document.querySelectorAll('p');
     messages.forEach((msg) => msg.remove());
 
-    computerDOMGrid.addEventListener('click', (e) => {
+    const handleTurn = (e) => {
       if (e.target.dataset.type !== 'cell') {
         return;
       }
@@ -86,14 +91,25 @@ const game = (function game() {
       e.target.style.backgroundColor = 'hsl(0deg 75% 45%)';
 
       if (ship.isSunk()) {
-        alert("You've sunk an enemy ship");
         computerShipCount -= 1;
         console.log('Remaining computer ships: ', computerShipCount);
       }
 
+      if (computerShipCount === 0) {
+        // eslint-disable-next-line no-use-before-define
+        announceWinner('Player');
+      }
+
       currentTurn = switchTurns(currentTurn);
       makeComputerMove();
-    });
+    };
+
+    const announceWinner = (winner) => {
+      alert(`${winner} has won`);
+      computerDOMGrid.removeEventListener('click', handleTurn);
+    };
+
+    computerDOMGrid.addEventListener('click', handleTurn);
   };
 
   const placeComputerShips = () => {
@@ -264,16 +280,16 @@ const game = (function game() {
       let currentX = parseInt(x, 10);
       let currentY = parseInt(y, 10);
 
-      playerBoard.placeShip(
-        { x: parseInt(x, 10), y: parseInt(y, 10), alignment: placementMode },
-        currentShip,
-      );
-
       const cellsToPlaceShipOn = [];
 
       if (10 - currentShip.length < getAxis(placementMode, x, y)) {
         return;
       }
+
+      playerBoard.placeShip(
+        { x: parseInt(x, 10), y: parseInt(y, 10), alignment: placementMode },
+        currentShip,
+      );
 
       for (let i = 0; i < currentShip.length; i++) {
         let cellToPlaceShipOn;
