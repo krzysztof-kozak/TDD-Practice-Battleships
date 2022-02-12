@@ -1,4 +1,5 @@
-function createShip(length) {
+function createShip(length, shipName = 'ship') {
+  const name = shipName;
   const shipParts = [];
 
   let i = 0;
@@ -14,6 +15,7 @@ function createShip(length) {
   const isSunk = () => shipParts.every((part) => part.isHit);
 
   return {
+    name,
     length,
     shipParts,
     hit,

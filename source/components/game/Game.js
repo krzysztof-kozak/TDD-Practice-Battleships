@@ -63,7 +63,7 @@ const game = (function game() {
 
         Swal.fire({
           title: 'Ship down!',
-          text: 'Enemy has sunk your __ship__',
+          text: `Enemy has sunk your ${ship.name}`,
           icon: 'warning',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'OK',
@@ -116,7 +116,7 @@ const game = (function game() {
 
         Swal.fire({
           title: 'Ship down!',
-          text: "You've sunk enemy __ship__",
+          text: `You've sunk enemy ${ship.name}`,
           icon: 'success',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'OK',
@@ -155,11 +155,11 @@ const game = (function game() {
     computerDOMGrid = board.render(computerBoard.grid);
 
     const shipsToPlace = [
-      { name: 'carrier', ship: createShip(5) },
-      { name: 'Battleship', ship: createShip(4) },
-      { name: 'Destroyer', ship: createShip(3) },
-      { name: 'Submarine', ship: createShip(3) },
-      { name: 'Patrol Boat', ship: createShip(2) },
+      { ship: createShip(5, 'Carrier') },
+      { ship: createShip(4, 'Battleship') },
+      { ship: createShip(3, 'Destroyer') },
+      { ship: createShip(3, 'Submarine') },
+      { ship: createShip(2, 'Patrol Boat') },
     ];
 
     const randomPlacements = [
@@ -211,20 +211,20 @@ const game = (function game() {
     const shipSpan = document.querySelector('.ship-span-js');
 
     const shipsToPlace = [
-      { name: 'carrier', ship: createShip(5) },
-      { name: 'Battleship', ship: createShip(4) },
-      { name: 'Destroyer', ship: createShip(3) },
-      { name: 'Submarine', ship: createShip(3) },
-      { name: 'Patrol Boat', ship: createShip(2) },
+      { ship: createShip(5, 'Carrier') },
+      { ship: createShip(4, 'Battleship') },
+      { ship: createShip(3, 'Destroyer') },
+      { ship: createShip(3, 'Submarine') },
+      { ship: createShip(2, 'Patrol Boat') },
     ];
 
     let currentIndex = 0;
     const maxIndex = shipsToPlace.length - 1;
 
-    let { name, ship: currentShip } = shipsToPlace[currentIndex];
+    let { ship: currentShip } = shipsToPlace[currentIndex];
 
     playerSpan.textContent = player.name;
-    shipSpan.textContent = name;
+    shipSpan.textContent = currentShip.name;
 
     let placementMode = 'vertical';
 
@@ -371,11 +371,10 @@ const game = (function game() {
       }
 
       currentIndex += 1;
-      const newShip = shipsToPlace[currentIndex];
+      const { ship: newShip } = shipsToPlace[currentIndex];
+      currentShip = newShip;
 
-      name = newShip.name;
-      currentShip = newShip.ship;
-      shipSpan.textContent = name;
+      shipSpan.textContent = currentShip.name;
     };
 
     const handleKeypress = (e) => {
