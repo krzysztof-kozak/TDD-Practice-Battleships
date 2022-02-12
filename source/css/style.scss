@@ -1,6 +1,9 @@
 body {
   background-color: hsl(0, 5%, 10%);
   color: hsl(0, 0%, 100%);
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
 }
 
 .hidden {

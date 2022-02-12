@@ -21,7 +21,7 @@ const board = (function board() {
     });
 
     container.appendChild(fragment);
-    document.querySelector('body').appendChild(container);
+    document.querySelector('body').prepend(container);
     return container;
   };
 

@@ -1,7 +1,7 @@
 import { createShip } from '../ship';
 import { createGameboard } from '../gameboard';
 import { createPlayer } from '../player';
-import { homeScreen, board, placementMessage } from '../ui';
+import { homeScreen, board, placementMessage, footer } from '../ui';
 import style from '../ui/home_screen/style.module.scss';
 
 const game = (function game() {
@@ -78,7 +78,7 @@ const game = (function game() {
       currentTurn = switchTurns(currentTurn);
     };
 
-    const messages = document.querySelectorAll('p');
+    const messages = document.querySelectorAll('body > p');
     messages.forEach((msg) => msg.remove());
 
     const handleTurn = (e) => {
@@ -416,6 +416,7 @@ const game = (function game() {
 
   const initialize = () => {
     homeScreen.render('body');
+    document.body.appendChild(footer());
 
     const button = document.querySelector(`.${style.button}`);
     button.addEventListener('click', handleStartGame);

@@ -9,6 +9,10 @@
   margin-top: 2em;
 }
 
+.container + .container {
+  margin-bottom: 2em;
+}
+
 .cell {
   border: 1px solid;
   display: flex;
